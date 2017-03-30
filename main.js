@@ -150,7 +150,6 @@ var theGame = {
                 seconds--;
                 next = formatTime(seconds).split("");
                 setTime();
-                console.log(seconds + " seconds remaining!" + Date.now())
             },
             function (err) {
                 console.log('Error: ' + err);
