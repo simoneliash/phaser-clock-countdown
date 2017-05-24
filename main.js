@@ -65,14 +65,61 @@ function formatTime(s) {
 // loop trough all characters and animate them if they were changed
 function setTime() {
     next.forEach(function (char, index) {
-        items[index].setText(char);
+
         if (char != previous[index]) {
+            var graphics = game.add.graphics(0, 0);
+            var container;
+            graphics.beginFill(0xffffff);
+            graphics.drawRoundedRect(0, 0, 43, 60, 8);
+            container = graphics.generateTexture();
+            graphics.clear();
+            
+            containerSprite[index] = game.add.sprite(0, 0, container);
+            containerSprite[index].addChild(graphics);
+            items[index] = game.add.text(0, 0, char, style);
+            items[index].anchor.setTo(-0.15, 0);
+            containerSprite[index].addChild(items[index]);
+            
+            bmd[index] = game.make.bitmapData(43, 60);
+            bmd[index].drawFull(containerSprite[index]);
+            bmd1[index] = game.make.bitmapData(43, 30);
+            bmd2[index] = game.make.bitmapData(43, 30);
+            
+            var rect = new Phaser.Rectangle(0, 0, 43, 30);
+            bmd1[index].copyRect(bmd[index].canvas, rect, 0, 0);
+            var rect2 = new Phaser.Rectangle(0, 30, 43, 30);
+            bmd2[index].copyRect(bmd[index].canvas, rect2, 0, 0);
+            containerSprite[index].kill();
+            
+            top2[index] = game.add.sprite(0,0,bmd1[index]);
+            bottom2[index] = game.add.sprite(0,0,bmd2[index]);
+            top2[index].anchor.setTo(1);
+            top2[index].x = top[index].x;
+            top2[index].y = top[index].y;
+            bottom2[index].x = bottom[index].x;
+            bottom2[index].y = bottom[index].y;
+            top[index].bringToTop();
+            bottom2[index].scale.setTo(0);
+            bottom2[index].bringToTop();
+
             // scale to 0
-            var tw = game.add.tween(items[index].scale).to(({y: 0}), 100, Phaser.Easing.Linear.In, true, 0);
+            var tw = game.add.tween(top[index].scale).to(({y: 0}), 120, Phaser.Easing.Linear.In, true, 0);
+            top[index].tint = 0x777777;
+            top[index].alpha = 0.6;
             tw.onComplete.addOnce(show, this);
         }
         function show() {
-            var tw = game.add.tween(items[index].scale).to(({y: 1}), 100, Phaser.Easing.Linear.In, true, 0);
+            var tw2 = game.add.tween(bottom2[index].scale).to(({y:1}), 120, Phaser.Easing.Linear.In, true, 0);
+            bottom[index].alpha = 0.6;
+            bottom2[index].scale.setTo(1);
+            tw2.onComplete.addOnce(completed, this);
+        }
+
+        function completed() {
+            bottom[index].kill();
+            top[index].kill();
+            top[index] = top2[index];
+            bottom[index] = bottom2[index];
         }
     });
 }
@@ -107,25 +154,33 @@ var theGame = {
 
                 containerSprite[index] = game.add.sprite(0, 0, container);
                 containerSprite[index].addChild(graphics);
-                containerSprite[index].x = 3 + margin;
-                containerSprite[index].y = 10;
 
-
-                // put cross on the middle of each character
-                var cross;
-                var cr = game.add.bitmapData(35, 2);
-                cr.ctx.beginPath();
-                cr.ctx.rect(0, 0, 35, 2);
-                cr.ctx.fillStyle = '#474747';
-                cr.ctx.fill();
-                cross = game.add.sprite(4, 27, cr);
-
-                items[index] = game.add.text(21, 31, char, style);
-                items[index].anchor.setTo(0.5, 0.5);
+                items[index] = game.add.text(0, 0, char, style);
+                items[index].anchor.setTo(-0.15, 0);
 
                 containerSprite[index].addChild(items[index]);
-                containerSprite[index].addChild(cross);
+                bmd[index] = game.make.bitmapData(43, 60);
 
+                bmd[index].drawFull(containerSprite[index]);
+                bmd1[index] = game.make.bitmapData(43, 30);
+
+                bmd2[index] = game.make.bitmapData(43, 30);
+                var rect = new Phaser.Rectangle(0, 0, 43, 30);
+                bmd1[index].copyRect(bmd[index].canvas, rect, 0, 0);
+                var rect2 = new Phaser.Rectangle(0, 30, 43, 30);
+
+                bmd2[index].copyRect(bmd[index].canvas, rect2, 0, 0);
+                top[index] = game.add.sprite(0,0,bmd1[index]);
+
+                bottom[index] = game.add.sprite(0,0,bmd2[index]);
+
+                top[index].x = 46 + margin;
+                top[index].y = 39;
+                top[index].anchor.setTo(1);
+                bottom[index].x = 3 + margin;
+                bottom[index].y = 40;
+
+                containerSprite[index].kill();
                 // space between each character
                 margin += 44;
 
@@ -135,6 +190,7 @@ var theGame = {
                     var sep = game.add.text(game.world.centerX - margin + 185, game.world.centerY, ":", style2);
                     sep.anchor.setTo(0.5, 0.75);
                 }
+
             });
         }
 
