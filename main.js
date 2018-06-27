@@ -16,6 +16,7 @@ var clock;
 
 var next = [];
 var items = [];
+var bmd = [];
 var containerSprite = [];
 var margin = 0;
 
