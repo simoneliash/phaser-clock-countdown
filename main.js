@@ -17,6 +17,12 @@ var clock;
 var next = [];
 var items = [];
 var bmd = [];
+var bmd1 = [];
+var bmd2 = [];
+var bottom = [];
+var bottom2 = [];
+var toptop = [];
+var top2 = [];
 var containerSprite = [];
 var margin = 0;
 
@@ -95,18 +101,18 @@ function setTime() {
             top2[index] = game.add.sprite(0,0,bmd1[index]);
             bottom2[index] = game.add.sprite(0,0,bmd2[index]);
             top2[index].anchor.setTo(1);
-            top2[index].x = top[index].x;
-            top2[index].y = top[index].y;
+            top2[index].x = toptop[index].x;
+            top2[index].y = toptop[index].y;
             bottom2[index].x = bottom[index].x;
             bottom2[index].y = bottom[index].y;
-            top[index].bringToTop();
+            toptop[index].bringToTop();
             bottom2[index].scale.setTo(0);
             bottom2[index].bringToTop();
 
             // scale to 0
-            var tw = game.add.tween(top[index].scale).to(({y: 0}), 120, Phaser.Easing.Linear.In, true, 0);
-            top[index].tint = 0x777777;
-            top[index].alpha = 0.6;
+            var tw = game.add.tween(toptop[index].scale).to(({y: 0}), 120, Phaser.Easing.Linear.In, true, 0);
+            toptop[index].tint = 0x777777;
+            toptop[index].alpha = 0.6;
             tw.onComplete.addOnce(show, this);
         }
         function show() {
@@ -118,8 +124,8 @@ function setTime() {
 
         function completed() {
             bottom[index].kill();
-            top[index].kill();
-            top[index] = top2[index];
+            toptop[index].kill();
+            toptop[index] = top2[index];
             bottom[index] = bottom2[index];
         }
     });
@@ -171,13 +177,13 @@ var theGame = {
                 var rect2 = new Phaser.Rectangle(0, 30, 43, 30);
 
                 bmd2[index].copyRect(bmd[index].canvas, rect2, 0, 0);
-                top[index] = game.add.sprite(0,0,bmd1[index]);
+                toptop[index] = game.add.sprite(0,0,bmd1[index]);
 
                 bottom[index] = game.add.sprite(0,0,bmd2[index]);
 
-                top[index].x = 46 + margin;
-                top[index].y = 39;
-                top[index].anchor.setTo(1);
+                toptop[index].x = 46 + margin;
+                toptop[index].y = 39;
+                toptop[index].anchor.setTo(1);
                 bottom[index].x = 3 + margin;
                 bottom[index].y = 40;
 
